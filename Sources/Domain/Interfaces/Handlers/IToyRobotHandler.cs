@@ -13,7 +13,7 @@ namespace ToyRobot.Domain.Interfaces.Handlers
 
         public Robot PlaceRobot(Position position);
 
-        public Robot MoveRobot(Position position);
+        public Robot MoveRobot();
 
         public Robot TurnRobot(CommandType toDirection);
     }

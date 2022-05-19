@@ -36,7 +36,7 @@ namespace ToyRobot.Infrastructure.Parsers
                     ////Position Facing Parsing - we don't want to throw and exception since this is an optional parameter
                     DirectionFacing direction;
 
-                    if (!String.IsNullOrEmpty(inputArgs[3]) && Enum.TryParse(inputArgs[3].ToUpper(), out direction))
+                    if (inputArgs.Length > 3 && !String.IsNullOrEmpty(inputArgs[3]) && Enum.TryParse(inputArgs[3].ToUpper(), out direction))
                     {
                         command.Position.Facing = direction;
                     }

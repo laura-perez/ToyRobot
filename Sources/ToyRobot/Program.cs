@@ -19,7 +19,7 @@ namespace ToyRobot.ConsoleApplication
 
             //init -very basic- Dependency Injection
             ICommandParser _commandParser = new CommandParser();
-            IToyRobotHandler _toyRobotHandler = new ToyRobotHandler(tabletop);
+            IToyRobotHandler _toyRobotHandler = new ToyRobotHandler(robot, tabletop);
 
             //Initialization of the game - waiting for PLACE command only
             Console.WriteLine(InitGameAscii());
@@ -37,19 +37,17 @@ namespace ToyRobot.ConsoleApplication
                     {
                         case CommandType.PLACE:
 
-                            //First PLACE command:
-                            if (command.Position.Facing is null)
-                            {
-                                throw new Exception("Please specify a facing direction for the first command place");
-                            }
-
                             _toyRobotHandler.PlaceRobot(command.Position);
 
-                            Console.WriteLine("Robot is on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
-                            
+                            Console.WriteLine("Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
+
                             break;
                         case CommandType.MOVE:
-                            _toyRobotHandler.MoveRobot(command.Position);
+
+                            _toyRobotHandler.MoveRobot();
+                            
+                            Console.WriteLine("Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y + ")");
+
                             break;
                         case CommandType.LEFT:
                             _toyRobotHandler.TurnRobot(CommandType.LEFT);
@@ -58,13 +56,21 @@ namespace ToyRobot.ConsoleApplication
                             _toyRobotHandler.TurnRobot(CommandType.RIGHT);
                             break;
                         case CommandType.REPORT:
+                            DrawPositionASCII(robot.Position.X, robot.Position.Y);
+
+                            Console.WriteLine("ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "");
                             break;
                     }
                 }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(errorRobotAscii());
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(invalidCommandAscii());
+
+                    Console.WriteLine("ROBOT SAYS: " + ex.Message);
                 }
             }
         }
@@ -103,7 +109,7 @@ COMMANDS:
 To get started, put the robot on the table:";
         }
 
-        static string errorRobotAscii()
+        static string invalidCommandAscii()
         {
             return @"
               ____________________________________
