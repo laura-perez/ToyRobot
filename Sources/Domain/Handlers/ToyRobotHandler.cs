@@ -22,7 +22,7 @@ namespace ToyRobot.Domain.Handlers
 
         public Robot PlaceRobot(Position position)
         {
-            if (!isPositionValid(position))
+            if (!IsPositionValid(position))
             {
                 throw new ArgumentOutOfRangeException("Please place Robot within the table boundaries.");
             }
@@ -63,7 +63,7 @@ namespace ToyRobot.Domain.Handlers
                     break;
             }
 
-            if (!isPositionValid(newPosition))
+            if (!IsPositionValid(newPosition))
             {
                 throw new ArgumentOutOfRangeException("Robot is about to fall off the table. Please change facing direction or enter a new command PLACE");
             }
@@ -74,7 +74,9 @@ namespace ToyRobot.Domain.Handlers
 
         public Robot TurnRobot(CommandType toDirection)
         {
-            throw new NotImplementedException();
+            _robot.Position.Facing = Rotate(_robot.Position.Facing.Value, toDirection);
+
+            return _robot;
         }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace ToyRobot.Domain.Handlers
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        private bool isPositionValid(Position position)
+        private bool IsPositionValid(Position position)
         {
             if (0 <= position.X && position.X <= _tabletop.Width)
             {
@@ -92,5 +94,44 @@ namespace ToyRobot.Domain.Handlers
             return false;
         }
 
+        /// <summary>
+        /// This methos sets a dictionary of cardinal points directions and linked compass degrees
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<int, DirectionFacing> GetOrientationsDictionary()
+        {
+            Dictionary<int, DirectionFacing> orientations =
+                           new Dictionary<int, DirectionFacing>();
+
+            orientations.Add(0, DirectionFacing.NORTH);
+            orientations.Add(90, DirectionFacing.EAST);
+            orientations.Add(180, DirectionFacing.SOUTH);
+            orientations.Add(270, DirectionFacing.WEST);
+
+            return orientations;
+        }
+
+        /// <summary>
+        /// This methods does a 90 degrees rotation
+        /// </summary>
+        /// <param name="directionFacing">the initial facing direction of the robot</param>
+        /// <param name="commandType">LEFT or RIGHT</param>
+        /// <returns></returns>
+        private DirectionFacing Rotate(DirectionFacing directionFacing, CommandType commandType)
+        {
+            var orientationsDictionary = GetOrientationsDictionary();
+            var degrees = orientationsDictionary.FirstOrDefault(pairs => pairs.Value.Equals(directionFacing)).Key;
+
+            if (commandType is CommandType.LEFT)
+            {
+                if (degrees == 0) degrees = 360;
+                return orientationsDictionary[degrees - 90];
+            }
+            else
+            {
+                if (degrees == 270) degrees = -90;
+                return orientationsDictionary[degrees + 90];
+            }
+        }
     }
 }
