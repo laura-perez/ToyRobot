@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\" />
-    <Folder Include="Interfaces\Handlers\" />
-    <Folder Include="Interfaces\Parsers\" />
-    <Folder Include="Models\Enums\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
 
