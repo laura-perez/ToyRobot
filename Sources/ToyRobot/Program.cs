@@ -37,26 +37,26 @@ namespace ToyRobot.ConsoleApplication
                     {
                         case CommandType.PLACE:
 
-                            _toyRobotHandler.PlaceRobot(command.Position);
+                            robot = _toyRobotHandler.PlaceRobot(command.Position);
 
                             Console.WriteLine("Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
 
                             break;
                         case CommandType.MOVE:
 
-                            _toyRobotHandler.MoveRobot();
+                            robot = _toyRobotHandler.MoveRobot();
                             
                             Console.WriteLine("Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y + ")");
 
                             break;
                         case CommandType.LEFT:
-                            _toyRobotHandler.TurnRobot(CommandType.LEFT);
+                            robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
                             break;
                         case CommandType.RIGHT:
-                            _toyRobotHandler.TurnRobot(CommandType.RIGHT);
+                            robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
                             break;
                         case CommandType.REPORT:
-                            DrawPositionASCII(robot.Position.X, robot.Position.Y);
+                            Console.WriteLine(DrawPositionASCII(robot.Position.X, robot.Position.Y));
 
                             Console.WriteLine("ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "");
                             break;
