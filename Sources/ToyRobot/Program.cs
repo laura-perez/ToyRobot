@@ -4,6 +4,8 @@ using ToyRobot.Domain.Interfaces.Parsers;
 using ToyRobot.Domain.Models;
 using ToyRobot.Infrastructure.Parsers;
 using ToyRobot.Domain.Models.Enums;
+using ToyRobot.Domain.Interfaces.Handlers;
+using ToyRobot.Domain.Handlers;
 
 namespace ToyRobot.ConsoleApplication
 {
@@ -11,31 +13,62 @@ namespace ToyRobot.ConsoleApplication
     {
         static void Main(string[] args)
         {
+            //TODO: move data persistence to repository
+            Robot robot = new Robot();
+            Tabletop tabletop = new Tabletop(6, 6); //TODO: put table size in configuration
+
             //init -very basic- Dependency Injection
             ICommandParser _commandParser = new CommandParser();
+            IToyRobotHandler _toyRobotHandler = new ToyRobotHandler(tabletop);
 
             //Initialization of the game - waiting for PLACE command only
             Console.WriteLine(InitGameAscii());
-            var input = Console.ReadLine();
 
-            Command command;
-            _commandParser.TryParse(input, out command);
-
-            while (command.CommandType is not CommandType.PLACE)
-            { 
-                
-            }
-
-
-
-
-            while (_commandParser.TryParse(input, out command))
+            while (true) //infinite game
             {
-                Console.WriteLine("This command is not Valid. Please start the game with the command PLACE");
-                input = Console.ReadLine();
-            }
+                try
+                {
+                    Console.WriteLine("Your command is my command:");
+                    var input = Console.ReadLine();
 
+                    var command = _commandParser.Parse(input);
+
+                    switch (command.CommandType)
+                    {
+                        case CommandType.PLACE:
+
+                            //First PLACE command:
+                            if (command.Position.Facing is null)
+                            {
+                                throw new Exception("Please specify a facing direction for the first command place");
+                            }
+
+                            _toyRobotHandler.PlaceRobot(command.Position);
+
+                            Console.WriteLine("Robot is on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
+                            
+                            break;
+                        case CommandType.MOVE:
+                            _toyRobotHandler.MoveRobot(command.Position);
+                            break;
+                        case CommandType.LEFT:
+                            _toyRobotHandler.TurnRobot(CommandType.LEFT);
+                            break;
+                        case CommandType.RIGHT:
+                            _toyRobotHandler.TurnRobot(CommandType.RIGHT);
+                            break;
+                        case CommandType.REPORT:
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(errorRobotAscii());
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
+
         static string InitGameAscii()
         {
             return @" 
@@ -68,6 +101,30 @@ COMMANDS:
 
 
 To get started, put the robot on the table:";
+        }
+
+        static string errorRobotAscii()
+        {
+            return @"
+              ____________________________________
+|.=================================.|
+||  PLEASE ENTER A VALID COMMAND.  ||
+||  PLEASE ENTER A VALID COMMAND.  ||
+||  PLEASE ENTER A VALID COMMAND.  ||
+||  PLEASE ENTER A,                ||
+||              /                  ||
+||     [____]  /\                  ||
+||     ]    [ / /                  ||
+||   ___\__/_/ /                   ||
+||__|__|    |_/____________________||
+.|===|_|_/\_|======================||
+     | | __ | 
+     |_|[::]|  
+     \_|_||_| 
+       |_||_|    
+      _|_||_|_ 
+     |___||___| 
+            ";
         }
 
         static string DrawPositionASCII(int x, int y)

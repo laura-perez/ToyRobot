@@ -9,6 +9,6 @@ namespace ToyRobot.Domain.Interfaces.Parsers
 {
     public interface ICommandParser
     {
-        public bool TryParse(string input, out Command command);
+        public Command Parse(string input);
     }
 }

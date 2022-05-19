@@ -17,12 +17,9 @@ namespace ToyRobot.Infrastructure.Parsers
         /// <param name="inputArgs">the input string</param>
         /// <param name="command">the command object</param>
         /// <returns>a boolean if succeeded</returns>
-        public bool TryParse(string input, out Command command)
+        public Command Parse(string input)
         {
-            command = new Command();
-
-            if (String.IsNullOrEmpty(input)) return false;
-
+            Command command = new Command();
             var inputArgs = input.Split(' ');
 
             try
@@ -36,7 +33,7 @@ namespace ToyRobot.Infrastructure.Parsers
                     command.Position.X = int.Parse(inputArgs[1]);
                     command.Position.Y = int.Parse(inputArgs[2]);
 
-                    //Position Facing Parsing - we don't want to throw and exception since this is an optional parameter
+                    ////Position Facing Parsing - we don't want to throw and exception since this is an optional parameter
                     DirectionFacing direction;
 
                     if (!String.IsNullOrEmpty(inputArgs[3]) && Enum.TryParse(inputArgs[3].ToUpper(), out direction))
@@ -45,12 +42,12 @@ namespace ToyRobot.Infrastructure.Parsers
                     }
                 }
 
-                return true;
+                return command;
             }
             //TODO: Parser specific Exception
             catch (Exception)
             {
-                return false;
+                throw new Exception("Please enter a valid command!");
             }
         }
     }
