@@ -83,7 +83,8 @@ namespace ToyRobot.ConsoleApplication
                     throw new NullReferenceException("Please start with a command PLACE");
                 }
 
-                return "falling into the darkness!";
+                //This should never happen!
+                throw new Exception("falling into the darkness!");
             }
             catch (ArgumentOutOfRangeException ex)
             {

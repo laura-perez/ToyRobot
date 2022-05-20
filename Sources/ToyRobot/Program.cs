@@ -76,7 +76,7 @@ namespace ToyRobot.ConsoleApplication
 You are playing on a 6x6 square tabletop
 
 COMMANDS:
-* PLACE will put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST
+* PLACE will put the toy robot on the table in position X Y FACING (NORTH, SOUTH, EAST or WEST)
 * MOVE will move the toy robot one unit forward in the direction it is currently facing
 * LEFT will rotate the robot 90 degrees left
 * RIGHT will rotate the robot 90 degrees right
