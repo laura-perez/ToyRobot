@@ -22,24 +22,6 @@ namespace ToyRobot.ConsoleApplication.Tests
         }
 
         [Fact]
-        public void EmptyCommandReturnsInvalidMessage()
-        {
-            //Arrange
-            string input = "";
-            _mockcommandParser.Setup(x => x.Parse(input))
-                                .Throws(new ArgumentException("Please enter a valid command."));
-
-            _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
-
-            //Act
-            var result = _simulator.ExecuteCommand("");
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().Contain("PLEASE ENTER A VALID COMMAND");
-        }
-
-        [Fact]
         public void InvalidCommandReturnsInvalidMessage()
         {
             //Arrange
@@ -73,49 +55,33 @@ namespace ToyRobot.ConsoleApplication.Tests
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().Contain("ROBOT is not yet on the table: Please start with a command PLACE", result);
+            result.Should().Contain("ROBOT is not yet on the table: Please start with a command PLACE");
         }
 
-        #region First time command PLACE
-
+        #region COMMAND PLACE
         [Fact]
-        public void FirstCommandPlaceWithoutParametersReturnsInvalidMessage()
-        {
-            //Arrange
-            var input = "PLACE";
-
-            _mockcommandParser.Setup(x => x.Parse(input))
-                                .Throws(new IndexOutOfRangeException("Command PLACE requires X Y and FACING (NORTH, EAST, SOUTH, WEST) parameters"));
-
-            _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
-
-            //Act
-            var result = _simulator.ExecuteCommand(input);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().Contain("ROBOT says: Command PLACE requires X Y and FACING (NORTH, EAST, SOUTH, WEST) parameters", result);
-        }
-
-        [Fact]
-        public void FirstCommandPlaceWithoutFacingParametersReturnsInvalidMessage()
+        public void FirstSuccessfulCommandPlaceReturnsPositionMessage()
         {
             //Arrange
             var input = "PLACE 1 2";
-            var mockCommand = new Command() { 
-                                CommandType = CommandType.PLACE,
-                                Position = new Position()
-                                {
-                                    X = 1,
-                                    Y = 2
-                                }
+            var position = new Position()
+            {
+                X = 1,
+                Y = 2,
+                Facing = DirectionFacing.NORTH
             };
+            var mockCommand = new Command()
+            {
+                CommandType = CommandType.PLACE,
+                Position = position
+            };
+            var robot = new Robot() { Position = position };
 
             _mockcommandParser.Setup(x => x.Parse(input))
                                 .Returns(mockCommand);
 
             _mocktoyRobotHandler.Setup(x => x.PlaceRobot(mockCommand.Position))
-                                .Throws(new ArgumentNullException("Please specify a facing direction for the first command place (NORTH EAST SOUTH WEST)."));
+                                .Returns(robot);
 
             _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
 
@@ -124,44 +90,34 @@ namespace ToyRobot.ConsoleApplication.Tests
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().Contain("ROBOT says: Please specify a facing direction for the first command place (NORTH EAST SOUTH WEST).", result);
+            result.Should().Contain("Robot is now on the table with coords (1,2) and facing NORTH");
         }
-
-        [Fact]
-        public void FirstSuccessfulCommandPlaceReturnsPositionMessage()
-        {
-            _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
-
-            var result = _simulator.ExecuteCommand("PLACE 0 0 NORTH");
-
-            Assert.Equal("Robot is now on the table with coords (0,0) and facing NORTH", result);
-        }
-
-        #endregion
-
-        #region COMMAND PLACE
 
         [Fact]
         public void SubsequentSuccessfulCommandPlaceWithoutDirectionParameterReturnsPositionMessage()
         {
             //Arrange
-            var mockRobot = new Robot()
+            string input = "PLACE 2 4";
+            var position = new Position()
             {
-                Position = new Position()
-                {
-                    Facing = DirectionFacing.NORTH,
-                    X = 0,
-                    Y = 0
-                }
+                X = 1,
+                Y = 2,
+                Facing = DirectionFacing.NORTH
             };
-
             var newPosition = new Position()
             {
                 X = 2,
                 Y = 4
             };
+            var mockCommand = new Command()
+            {
+                CommandType = CommandType.PLACE,
+                Position = newPosition
+            };
+            var mockRobot = new Robot() { Position = position };
 
-            string mockCommand = "PLACE 2 4";
+            _mockcommandParser.Setup(x => x.Parse(input))
+                                .Returns(mockCommand);
 
             _mocktoyRobotHandler.Setup(x => x.PlaceRobot(newPosition))
                                 .Returns(new Robot 
@@ -173,40 +129,55 @@ namespace ToyRobot.ConsoleApplication.Tests
                                         Facing = mockRobot.Position.Facing
                                     }
                                 });
-
-            _mockcommandParser.Setup(x => x.Parse(mockCommand))
-                                .Returns(new Command
-                                {
-                                    CommandType = CommandType.PLACE,
-                                    Position = newPosition
-                                });
             
             _simulator = new ToyRobotSimulator(mockRobot, new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
 
-            var result = _simulator.ExecuteCommand(mockCommand);
+            //Act
+            var result = _simulator.ExecuteCommand(input);
 
-            Assert.Equal("Robot is now on the table with coords (2,4) and facing NORTH", result);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().Contain("ROBOT is on the table at position (2,4) and is facing NORTH");
         }
 
         [Fact]
-        public void CommandPlaceOutOfXBoundariesReturnsBoundariesMessage()
+        public void CommandPlaceOutOfBoundariesReturnsBoundariesMessage()
         {
-            _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
+            //Arrange
+            string input = "PLACE 0 6";
+            var position = new Position()
+            {
+                X = 0,
+                Y = 0,
+                Facing = DirectionFacing.NORTH
+            };
+            var mockCommand = new Command()
+            {
+                CommandType = CommandType.PLACE,
+                Position = new Position()
+                {
+                    X = 0,
+                    Y = 6
+                }
+            };
+            var mockRobot = new Robot() { Position = position };
 
-            var result = _simulator.ExecuteCommand("PLACE 0 6 NORTH");
+            _mockcommandParser.Setup(x => x.Parse(input))
+                                .Returns(mockCommand);
 
-            Assert.Equal("Please place Robot within the table boundaries.", result);
+            _mocktoyRobotHandler.Setup(x => x.PlaceRobot(mockCommand.Position))
+                                .Throws(new ArgumentOutOfRangeException("Please place Robot within the table boundaries."));
+
+            _simulator = new ToyRobotSimulator(mockRobot, new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
+
+            var result = _simulator.ExecuteCommand(input);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().Contain("Please place Robot within the table boundaries.");
         }
 
-        [Fact]
-        public void CommandPlaceOutOfYBoundariesReturnsBoundariesMessage()
-        {
-            _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
 
-            var result = _simulator.ExecuteCommand("PLACE 6 0 NORTH");
-
-            Assert.Equal("Please place Robot within the table boundaries.", result);
-        }
         #endregion
     }
 }
