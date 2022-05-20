@@ -33,7 +33,7 @@ Select Folder, Folder then Finish
 
 On the publish screen Click on "More action" -> Settings to open the publish profile settings.
 
-Set the deployment mode to "Self-contained". Save and publish.
+Set the deployment mode to "Self-contained" and target to your targeted environment. Save and publish.
 
 ## Usage
 
