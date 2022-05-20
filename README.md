@@ -45,3 +45,35 @@ MOVE
 LEFT
 RIGHT
 REPORT
+
+### Example Input and Output
+Example 1 Input
+> PLACE 0,0,NORTH
+> MOVE
+> REPORT
+Output: 0,1,NORTH
+
+Example 2 Input
+> PLACE 0,0,NORTH
+> LEFT
+> REPORT
+Output: 0,0,WEST
+
+Example 3 Input
+> PLACE 1,2,EAST
+> MOVE
+> MOVE
+> LEFT
+> MOVE
+> REPORT
+Output: 3,3,NORTH
+
+Example 4 Input
+> PLACE 1,2,EAST
+> MOVE
+> LEFT
+> MOVE
+> PLACE 3,1
+> MOVE
+> REPORT
+Output: 3,2,NORTH
