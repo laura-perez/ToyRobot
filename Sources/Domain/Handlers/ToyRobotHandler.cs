@@ -76,8 +76,10 @@ namespace ToyRobot.Domain.Handlers
             {
                 throw new ArgumentOutOfRangeException("Robot is about to fall off the table. Please change facing direction or enter a new command PLACE");
             }
-
-            _robot.Position = newPosition;
+            else
+            {
+                _robot.Position = newPosition;
+            }
             return _robot;
         }
 

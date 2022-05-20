@@ -198,8 +198,8 @@ To get started, put the robot on the table:";
         static string DrawPositionASCII(int x, int y)
         {
             if (x < -1 || x > 5 || y < -1 || y > 5) return "Index Error"; // Check it's not out of range
-            var b = new string(' ', 15) + "*****";
-            var d = new[] { b, b, b, b, b};                           // Generate display box, and fill with the default character
+            var b = new string(' ', 15) + "******";
+            var d = new[] { b, b, b, b, b, b};                           // Generate display box, and fill with the default character
             d[y] = new string(' ', 15) + new string('*', x) + 'o' + new string('*', 5 - x);     // Replace the array's entry in y coordinate with a new string containing the new character
             return string.Join("\r\n", d.Reverse());
         }
