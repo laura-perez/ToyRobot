@@ -28,6 +28,7 @@ namespace ToyRobot.ConsoleApplication
             {
                 try
                 {
+                    Console.WriteLine();
                     Console.WriteLine("Your command is my command:");
                     var input = Console.ReadLine();
 
@@ -53,6 +54,7 @@ namespace ToyRobot.ConsoleApplication
 
                                 robot = _toyRobotHandler.PlaceRobot(command.Position);
 
+                                Console.WriteLine();
                                 Console.WriteLine("Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
 
                                 break;
@@ -60,20 +62,26 @@ namespace ToyRobot.ConsoleApplication
 
                                 robot = _toyRobotHandler.MoveRobot();
 
+                                Console.WriteLine();
                                 Console.WriteLine("Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y + ")");
 
                                 break;
                             case CommandType.LEFT:
 
                                 robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
+
+                                Console.WriteLine();
                                 Console.WriteLine("Robot is now facing " + robot.Position.Facing.ToString());
                                 break;
                             case CommandType.RIGHT:
                                 robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
                                 break;
                             case CommandType.REPORT:
+                                Console.WriteLine();
+                                Console.WriteLine(@"          Position of Robot:");
                                 Console.WriteLine(DrawPositionASCII(robot.Position.X, robot.Position.Y));
 
+                                Console.WriteLine();
                                 Console.WriteLine("ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "");
                                 break;
                         }
@@ -85,28 +93,34 @@ namespace ToyRobot.ConsoleApplication
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine();
+                    Console.WriteLine(ex.ParamName);
                 }
                 catch (ArgumentNullException ex)
                 {
-                    Console.WriteLine("ROBOT says: " + ex.Message);
+                    Console.WriteLine();
+                    Console.WriteLine("ROBOT says: " + ex.ParamName);
                 }
                 catch (ArgumentException ex)
                 {
+                    Console.WriteLine();
                     Console.WriteLine(invalidCommandAscii());
                 }
                 catch (NullReferenceException ex)
                 {
+                    Console.WriteLine();
                     Console.WriteLine("ROBOT is not yet on the table: " + ex.Message);
                 }
                 catch (Exception ex)
                 {
                     if (ex is IndexOutOfRangeException || ex is FormatException)
                     {
-                        Console.WriteLine("ROBOT says: " + ex.Message);
+                        Console.WriteLine();
+                        Console.WriteLine(@"ROBOT says: " + ex.Message);
                     }
                     else
                     {
+                        Console.WriteLine();
                         Console.WriteLine("Unmanaged exception: " + ex.Message);
                     }
                 }
@@ -183,11 +197,10 @@ To get started, put the robot on the table:";
         /// <returns></returns>
         static string DrawPositionASCII(int x, int y)
         {
-            if (x < 1 || x > 6 || y < 1 || y > 6) return "Index Error"; // Check it's not out of range
-            var b = "******";
-            var d = new[] { b, b, b, b, b };                           // Generate display box, and fill with the default character
-            x--;                                                        // Convert the X to a 0 based index
-            d[y - 1] = new string('*', x) + 'o' + new string('*', 5 - x);     // Replace the array's entry in y coordinate with a new string containing the new character
+            if (x < -1 || x > 5 || y < -1 || y > 5) return "Index Error"; // Check it's not out of range
+            var b = new string(' ', 15) + "*****";
+            var d = new[] { b, b, b, b, b};                           // Generate display box, and fill with the default character
+            d[y] = new string(' ', 15) + new string('*', x) + 'o' + new string('*', 5 - x);     // Replace the array's entry in y coordinate with a new string containing the new character
             return string.Join("\r\n", d.Reverse());
         }
     }
