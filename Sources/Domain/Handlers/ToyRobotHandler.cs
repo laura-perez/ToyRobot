@@ -97,9 +97,9 @@ namespace ToyRobot.Domain.Handlers
         /// <returns></returns>
         private bool IsPositionValid(Position position)
         {
-            if (0 <= position.X && position.X <= _tabletop.Width)
+            if (0 <= position.X && position.X < _tabletop.Width)
             {
-                if (0 <= position.Y && position.Y <= _tabletop.Height)
+                if (0 <= position.Y && position.Y < _tabletop.Height)
                     return true;
             }
             return false;

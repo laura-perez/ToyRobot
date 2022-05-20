@@ -52,7 +52,7 @@ namespace ToyRobot.Infrastructure.Parsers
             }
             catch (IndexOutOfRangeException)
             {
-                throw new IndexOutOfRangeException("Command PLACE required X Y and FACING (NORTH, EAST, SOUTH, WEST) parameters");
+                throw new IndexOutOfRangeException("Command PLACE requires X Y and FACING (NORTH, EAST, SOUTH, WEST) parameters");
             }
             catch (FormatException)
             {
