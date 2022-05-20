@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyRobot.ConsoleApplication
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyRobot.Domain.Tests", "ToyRobot.Domain.Tests\ToyRobot.Domain.Tests.csproj", "{C32D0D29-A83E-4DB6-AE1C-07949C36A899}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyRobot.Infrastructure.Tests", "ToyRobot.Infrastructure.Tests\ToyRobot.Infrastructure.Tests.csproj", "{31AD15DB-4F44-4A18-B38F-D5AB448F72CA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,10 +43,6 @@ Global
 		{C32D0D29-A83E-4DB6-AE1C-07949C36A899}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C32D0D29-A83E-4DB6-AE1C-07949C36A899}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C32D0D29-A83E-4DB6-AE1C-07949C36A899}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31AD15DB-4F44-4A18-B38F-D5AB448F72CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31AD15DB-4F44-4A18-B38F-D5AB448F72CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31AD15DB-4F44-4A18-B38F-D5AB448F72CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31AD15DB-4F44-4A18-B38F-D5AB448F72CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,7 +53,6 @@ Global
 		{5A7D5C5D-7F82-4ED7-A0AA-2F8E5C3AEDB8} = {731E93BA-2006-47B3-A891-822F1F186A42}
 		{656DA9C4-423E-4E73-81FF-0DC09078EC47} = {9FFA83DA-7FD7-46CD-B3F6-4F3B21D916E1}
 		{C32D0D29-A83E-4DB6-AE1C-07949C36A899} = {9FFA83DA-7FD7-46CD-B3F6-4F3B21D916E1}
-		{31AD15DB-4F44-4A18-B38F-D5AB448F72CA} = {9FFA83DA-7FD7-46CD-B3F6-4F3B21D916E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0C7D02F-3AAB-4C65-8495-475981EA0CA0}
