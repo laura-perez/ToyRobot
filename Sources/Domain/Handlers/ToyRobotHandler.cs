@@ -54,7 +54,13 @@ namespace ToyRobot.Domain.Handlers
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Robot MoveRobot()
         {
-            Position newPosition = _robot.Position;
+            //copy by value
+            var newPosition = new Position()
+            {
+                X = _robot.Position.X,
+                Y = _robot.Position.Y,
+                Facing = _robot.Position.Facing
+            };
 
             switch (_robot.Position.Facing)
             {
