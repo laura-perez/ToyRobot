@@ -47,6 +47,11 @@ namespace ToyRobot.Domain.Handlers
             return _robot;
         }
 
+        /// <summary>
+        /// moves the robot to one step in the direct it's already facing
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Robot MoveRobot()
         {
             Position newPosition = _robot.Position;
@@ -78,6 +83,11 @@ namespace ToyRobot.Domain.Handlers
             return _robot;
         }
 
+        /// <summary>
+        /// rotates the robot of 90 degrees in the direction specifies by the command (LEFT or RIGHT)
+        /// </summary>
+        /// <param name="toDirection"></param>
+        /// <returns></returns>
         public Robot TurnRobot(CommandType toDirection)
         {
             _robot.Position.Facing = Rotate(_robot.Position.Facing.Value, toDirection);

@@ -52,6 +52,10 @@ namespace ToyRobot.ConsoleApplication
             }
         }
 
+        /// <summary>
+        /// draws a nice robot to say hello!
+        /// </summary>
+        /// <returns>string</returns>
         static string InitGameAscii()
         {
             return @" 

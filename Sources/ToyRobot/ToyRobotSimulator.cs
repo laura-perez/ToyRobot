@@ -25,6 +25,11 @@ namespace ToyRobot.ConsoleApplication
             _toyRobotHandler = toyRobotHandler;
         }
 
+        /// <summary>
+        /// presentation logic
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public string ExecuteCommand(string input)
         {
             try
@@ -34,6 +39,7 @@ namespace ToyRobot.ConsoleApplication
                     throw new ArgumentException("Please enter a command.");
                 }
 
+                //call to the infrastucture parser
                 var command = _commandparser.Parse(input);
 
                 //First PLACE command
@@ -116,7 +122,7 @@ namespace ToyRobot.ConsoleApplication
         }
 
         /// <summary>
-        /// Draw "PLEASE ENTER A VALID COMMAND"
+        /// Draws "PLEASE ENTER A VALID COMMAND"
         /// </summary>
         /// <returns>the string output</returns>
         static string invalidCommandAscii()
