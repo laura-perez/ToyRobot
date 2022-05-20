@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using ToyRobot.Domain.Handlers;
+using ToyRobot.Domain.Interfaces.Handlers;
 using ToyRobot.Domain.Interfaces.Parsers;
 using ToyRobot.Domain.Models;
-using ToyRobot.Infrastructure.Parsers;
 using ToyRobot.Domain.Models.Enums;
-using ToyRobot.Domain.Interfaces.Handlers;
-using ToyRobot.Domain.Handlers;
+using ToyRobot.Infrastructure.Parsers;
 
 namespace ToyRobot.ConsoleApplication
 {
@@ -13,14 +13,27 @@ namespace ToyRobot.ConsoleApplication
     {
         static void Main(string[] args)
         {
-            //TODO: move data persistence to repository
             Robot robot = new Robot();
-            Tabletop tabletop = new Tabletop(6, 6); //TODO: put table size in configuration
+            Tabletop tabletop = new Tabletop(); //TODO: put table size in configuration
 
-            //init -very basic- Dependency Injection
-            ICommandParser _commandParser = new CommandParser();
-            IToyRobotHandler _toyRobotHandler = new ToyRobotHandler(robot, tabletop);
+            //Setup configuration builder
+            IConfiguration Config = new ConfigurationBuilder()
+                .AddJsonFile("Config/appSettings.json")
+                .Build();
 
+            //Get configuration values
+            Config.GetSection("TableTop").Bind(tabletop);
+            
+            //setup Dependency Injection
+            var serviceProvider = new ServiceCollection()
+                //.AddLogging()
+                .AddTransient<IToyRobotHandler, ToyRobotHandler>(s => new ToyRobotHandler(robot, tabletop))
+                .AddSingleton<ICommandParser, CommandParser>()
+                .BuildServiceProvider();
+
+            var _commandParser = serviceProvider.GetService<ICommandParser>();
+            var _toyRobotHandler = serviceProvider.GetService<IToyRobotHandler>();
+            
             //Initialization of the game - waiting for PLACE command only
             Console.WriteLine(InitGameAscii());
 

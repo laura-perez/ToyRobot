@@ -10,11 +10,5 @@ namespace ToyRobot.Domain.Models
     {
         public int Width { get; set; }
         public int Height { get; set; }
-
-        public Tabletop(int w, int h)
-        { 
-            Width = w;
-            Height = h;
-        }
     }
 }
