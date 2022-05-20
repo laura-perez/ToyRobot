@@ -14,12 +14,21 @@ namespace ToyRobot.Domain.Handlers
         private Robot _robot { get; set; }
         private Tabletop _tabletop { get; set; }
 
+        /// <summary>
+        /// </summary>
         public ToyRobotHandler(Robot robot, Tabletop tabletop) 
         {
             _robot = robot;
             _tabletop = tabletop;
         }
 
+        /// <summary>
+        /// PLACE the robot on the table
+        /// </summary>
+        /// <param name="position">the position the robot should be placed at</param>
+        /// <returns>the robot</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="Exception"></exception>
         public Robot PlaceRobot(Position position)
         {
             if (!IsPositionValid(position))
@@ -32,7 +41,7 @@ namespace ToyRobot.Domain.Handlers
                 //First PLACE command:
                 if (_robot.Position is null)
                 {
-                    throw new Exception("Please specify a facing direction for the first command place");
+                    throw new ArgumentNullException("Please specify a facing direction for the first command place (NORTH EAST SOUTH WEST).");
                 }
 
                 //if the direction facing is not specified, keep the current direction facing.

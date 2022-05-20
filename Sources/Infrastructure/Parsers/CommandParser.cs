@@ -42,13 +42,24 @@ namespace ToyRobot.Infrastructure.Parsers
                     }
                 }
 
-                return command;
+                
             }
-            //TODO: Parser specific Exception
-            catch (Exception)
+            //Invalid command entered in console
+            catch (ArgumentException)
             {
-                throw new Exception("Please enter a valid command!");
+                //var invalidCommand = ex.Message
+                throw new ArgumentException("Please enter a valid command.");
             }
+            catch (IndexOutOfRangeException)
+            {
+                throw new IndexOutOfRangeException("Command PLACE required X Y and FACING (NORTH, EAST, SOUTH, WEST) parameters");
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("Please check PLACE command parameters format. PLACE int int string.");
+            }
+
+            return command;
         }
     }
 }

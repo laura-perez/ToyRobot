@@ -31,46 +31,84 @@ namespace ToyRobot.ConsoleApplication
                     Console.WriteLine("Your command is my command:");
                     var input = Console.ReadLine();
 
+                    if (input == null)
+                    {
+                        throw new ArgumentException("Please enter a command.");
+                    }
+
                     var command = _commandParser.Parse(input);
 
-                    switch (command.CommandType)
+                    //First PLACE command
+                    if (robot.Position is null && command.CommandType == CommandType.PLACE)
                     {
-                        case CommandType.PLACE:
+                        robot = _toyRobotHandler.PlaceRobot(command.Position);
+                        Console.WriteLine(@"Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")" + " and facing " + robot.Position.Facing.ToString());
+                    }
+                    //Subsequent commands
+                    else if (robot != null && robot.Position != null)
+                    {
+                        switch (command.CommandType)
+                        {
+                            case CommandType.PLACE:
 
-                            robot = _toyRobotHandler.PlaceRobot(command.Position);
+                                robot = _toyRobotHandler.PlaceRobot(command.Position);
 
-                            Console.WriteLine("Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
+                                Console.WriteLine("Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
 
-                            break;
-                        case CommandType.MOVE:
+                                break;
+                            case CommandType.MOVE:
 
-                            robot = _toyRobotHandler.MoveRobot();
-                            
-                            Console.WriteLine("Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y + ")");
+                                robot = _toyRobotHandler.MoveRobot();
 
-                            break;
-                        case CommandType.LEFT:
-                            robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
-                            break;
-                        case CommandType.RIGHT:
-                            robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
-                            break;
-                        case CommandType.REPORT:
-                            Console.WriteLine(DrawPositionASCII(robot.Position.X, robot.Position.Y));
+                                Console.WriteLine("Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y + ")");
 
-                            Console.WriteLine("ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "");
-                            break;
+                                break;
+                            case CommandType.LEFT:
+
+                                robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
+                                Console.WriteLine("Robot is now facing " + robot.Position.Facing.ToString());
+                                break;
+                            case CommandType.RIGHT:
+                                robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
+                                break;
+                            case CommandType.REPORT:
+                                Console.WriteLine(DrawPositionASCII(robot.Position.X, robot.Position.Y));
+
+                                Console.WriteLine("ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "");
+                                break;
+                        }
+                    }
+                    else 
+                    {
+                        throw new NullReferenceException("Please start with a command PLACE");
                     }
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
-                catch (Exception ex)
+                catch (ArgumentNullException ex)
+                {
+                    Console.WriteLine("ROBOT says: " + ex.Message);
+                }
+                catch (ArgumentException ex)
                 {
                     Console.WriteLine(invalidCommandAscii());
-
-                    Console.WriteLine("ROBOT SAYS: " + ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    Console.WriteLine("ROBOT is not yet on the table: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is IndexOutOfRangeException || ex is FormatException)
+                    {
+                        Console.WriteLine("ROBOT says: " + ex.Message);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unmanaged exception: " + ex.Message);
+                    }
                 }
             }
         }
@@ -109,6 +147,10 @@ COMMANDS:
 To get started, put the robot on the table:";
         }
 
+        /// <summary>
+        /// Draw "PLEASE ENTER A VALID COMMAND"
+        /// </summary>
+        /// <returns>the string output</returns>
         static string invalidCommandAscii()
         {
             return @"
@@ -133,6 +175,12 @@ To get started, put the robot on the table:";
             ";
         }
 
+        /// <summary>
+        /// Draw a grid of the size 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         static string DrawPositionASCII(int x, int y)
         {
             if (x < 1 || x > 6 || y < 1 || y > 6) return "Index Error"; // Check it's not out of range
