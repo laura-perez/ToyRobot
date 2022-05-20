@@ -13,8 +13,9 @@ namespace ToyRobot.ConsoleApplication
     {
         static void Main(string[] args)
         {
+            //Declare entities
             Robot robot = new Robot();
-            Tabletop tabletop = new Tabletop(); //TODO: put table size in configuration
+            Tabletop tabletop = new Tabletop();
 
             //Setup configuration builder
             IConfiguration Config = new ConfigurationBuilder()
@@ -23,120 +24,31 @@ namespace ToyRobot.ConsoleApplication
 
             //Get configuration values
             Config.GetSection("TableTop").Bind(tabletop);
-            
+
             //setup Dependency Injection
             var serviceProvider = new ServiceCollection()
-                //.AddLogging()
-                .AddTransient<IToyRobotHandler, ToyRobotHandler>(s => new ToyRobotHandler(robot, tabletop))
+                .AddSingleton<IToyRobotHandler, ToyRobotHandler>(s => new ToyRobotHandler(robot, tabletop))
                 .AddSingleton<ICommandParser, CommandParser>()
                 .BuildServiceProvider();
 
             var _commandParser = serviceProvider.GetService<ICommandParser>();
             var _toyRobotHandler = serviceProvider.GetService<IToyRobotHandler>();
-            
+
+            ToyRobotSimulator simulator = new ToyRobotSimulator(robot, tabletop, _commandParser, _toyRobotHandler);
+
             //Initialization of the game - waiting for PLACE command only
             Console.WriteLine(InitGameAscii());
 
             while (true) //infinite game
             {
-                try
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Your command is my command:");
-                    var input = Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine("Your command is my command:");
 
-                    if (input == null)
-                    {
-                        throw new ArgumentException("Please enter a command.");
-                    }
+                var input = Console.ReadLine();
+                var output = simulator.ExecuteCommand(input);
 
-                    var command = _commandParser.Parse(input);
-
-                    //First PLACE command
-                    if (robot.Position is null && command.CommandType == CommandType.PLACE)
-                    {
-                        robot = _toyRobotHandler.PlaceRobot(command.Position);
-                        Console.WriteLine(@"Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")" + " and facing " + robot.Position.Facing.ToString());
-                    }
-                    //Subsequent commands
-                    else if (robot != null && robot.Position != null)
-                    {
-                        switch (command.CommandType)
-                        {
-                            case CommandType.PLACE:
-
-                                robot = _toyRobotHandler.PlaceRobot(command.Position);
-
-                                Console.WriteLine();
-                                Console.WriteLine("Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")");
-
-                                break;
-                            case CommandType.MOVE:
-
-                                robot = _toyRobotHandler.MoveRobot();
-
-                                Console.WriteLine();
-                                Console.WriteLine("Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y + ")");
-
-                                break;
-                            case CommandType.LEFT:
-
-                                robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
-
-                                Console.WriteLine();
-                                Console.WriteLine("Robot is now facing " + robot.Position.Facing.ToString());
-                                break;
-                            case CommandType.RIGHT:
-                                robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
-                                break;
-                            case CommandType.REPORT:
-                                Console.WriteLine();
-                                Console.WriteLine(@"          Position of Robot:");
-                                Console.WriteLine(DrawPositionASCII(robot.Position.X, robot.Position.Y));
-
-                                Console.WriteLine();
-                                Console.WriteLine("ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "");
-                                break;
-                        }
-                    }
-                    else 
-                    {
-                        throw new NullReferenceException("Please start with a command PLACE");
-                    }
-                }
-                catch (ArgumentOutOfRangeException ex)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(ex.ParamName);
-                }
-                catch (ArgumentNullException ex)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("ROBOT says: " + ex.ParamName);
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(invalidCommandAscii());
-                }
-                catch (NullReferenceException ex)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("ROBOT is not yet on the table: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    if (ex is IndexOutOfRangeException || ex is FormatException)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine(@"ROBOT says: " + ex.Message);
-                    }
-                    else
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Unmanaged exception: " + ex.Message);
-                    }
-                }
+                Console.WriteLine();
+                Console.WriteLine(output);
             }
         }
 
@@ -174,47 +86,5 @@ COMMANDS:
 To get started, put the robot on the table:";
         }
 
-        /// <summary>
-        /// Draw "PLEASE ENTER A VALID COMMAND"
-        /// </summary>
-        /// <returns>the string output</returns>
-        static string invalidCommandAscii()
-        {
-            return @"
-              ____________________________________
-|.=================================.|
-||  PLEASE ENTER A VALID COMMAND.  ||
-||  PLEASE ENTER A VALID COMMAND.  ||
-||  PLEASE ENTER A VALID COMMAND.  ||
-||  PLEASE ENTER A,                ||
-||              /                  ||
-||     [____]  /\                  ||
-||     ]    [ / /                  ||
-||   ___\__/_/ /                   ||
-||__|__|    |_/____________________||
-.|===|_|_/\_|======================||
-     | | __ | 
-     |_|[::]|  
-     \_|_||_| 
-       |_||_|    
-      _|_||_|_ 
-     |___||___| 
-            ";
-        }
-
-        /// <summary>
-        /// Draw a grid of the size 
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        static string DrawPositionASCII(int x, int y)
-        {
-            if (x < -1 || x > 5 || y < -1 || y > 5) return "Index Error"; // Check it's not out of range
-            var b = new string(' ', 15) + "******";
-            var d = new[] { b, b, b, b, b, b};                           // Generate display box, and fill with the default character
-            d[y] = new string(' ', 15) + new string('*', x) + 'o' + new string('*', 5 - x);     // Replace the array's entry in y coordinate with a new string containing the new character
-            return string.Join("\r\n", d.Reverse());
-        }
     }
 }
