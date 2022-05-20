@@ -51,7 +51,7 @@ namespace ToyRobot.ConsoleApplication
 
                             robot = _toyRobotHandler.PlaceRobot(command.Position);
 
-                            return "Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")";
+                            return "ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "";
                         case CommandType.MOVE:
 
                             robot = _toyRobotHandler.MoveRobot();
