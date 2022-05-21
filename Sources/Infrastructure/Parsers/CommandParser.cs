@@ -17,7 +17,7 @@ namespace ToyRobot.Infrastructure.Parsers
         /// <param name="inputArgs">the input string</param>
         /// <param name="command">the command object</param>
         /// <returns>a boolean if succeeded</returns>
-        public Command Parse(string input)
+        public Command Parse(string? input)
         {
             Command command = new Command();
             var inputArgs = input.Split(' ');

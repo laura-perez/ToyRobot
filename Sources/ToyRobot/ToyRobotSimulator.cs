@@ -30,7 +30,7 @@ namespace ToyRobot.ConsoleApplication
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public string ExecuteCommand(string input)
+        public string ExecuteCommand(string? input)
         {
             try
             {
@@ -42,11 +42,16 @@ namespace ToyRobot.ConsoleApplication
                 //call to the infrastucture parser
                 var command = _commandparser.Parse(input);
 
+                if (command is null)
+                {
+                    throw new NullReferenceException("Please start with a command PLACE");
+                }
+
                 //First PLACE command
                 if (robot.Position is null && command.CommandType == CommandType.PLACE)
                 {
                     robot = _toyRobotHandler.PlaceRobot(command.Position);
-                    return "Robot is now on the table with coords (" + robot.Position.X + "," + robot.Position.Y + ")" + " and facing " + robot.Position.Facing.ToString();
+                    return "Robot is now on the table with coords (" + robot?.Position?.X + "," + robot?.Position?.Y + ")" + " and facing " + robot?.Position?.Facing.ToString();
                 }
                 //Subsequent commands
                 else if (robot != null && robot.Position != null)
@@ -57,20 +62,20 @@ namespace ToyRobot.ConsoleApplication
 
                             robot = _toyRobotHandler.PlaceRobot(command.Position);
 
-                            return "ROBOT is on the table at position (" + robot.Position.X + "," + robot.Position.Y + ") and is facing " + robot.Position.Facing?.ToString() + "";
+                            return "ROBOT is on the table at position (" + robot?.Position?.X + "," + robot?.Position?.Y + ") and is facing " + robot?.Position?.Facing?.ToString() + "";
                         case CommandType.MOVE:
 
                             robot = _toyRobotHandler.MoveRobot();
 
-                            return "Robot went for a walk to position (" + robot.Position.X + "," + robot.Position.Y;
+                            return "Robot went for a walk to position (" + robot?.Position?.X + "," + robot?.Position?.Y;
                         case CommandType.LEFT:
 
                             robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
-                            return "Robot is now facing " + robot.Position.Facing.ToString();
+                            return "Robot is now facing " + robot?.Position?.Facing.ToString();
                         case CommandType.RIGHT:
 
                             robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
-                            return "Robot is now facing " + robot.Position.Facing.ToString();
+                            return "Robot is now facing " + robot?.Position?.Facing.ToString();
                         case CommandType.REPORT:
 
                             string toReturn = Environment.NewLine;
@@ -100,12 +105,13 @@ namespace ToyRobot.ConsoleApplication
             {
                 return "ROBOT says: " + ex.ParamName;
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 return invalidCommandAscii();
             }
             catch (NullReferenceException ex)
             {
+                //if(ex.m)
                 return "ROBOT is not yet on the table: " + ex.Message;
             }
             catch (Exception ex)

@@ -2,6 +2,6 @@
 {
     public class Robot
     {
-        public Position? Position { get; set; }
+        public Position Position { get; set; }
     }
 }
