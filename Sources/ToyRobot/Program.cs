@@ -17,13 +17,23 @@ namespace ToyRobot.ConsoleApplication
             Robot robot = new Robot();
             Tabletop tabletop = new Tabletop();
 
-            //Setup configuration builder
-            IConfiguration Config = new ConfigurationBuilder()
-                .AddJsonFile("Config/appSettings.json")
-                .Build();
+            //try to get configuration for the tabletop size
+            try
+            {
+                //Setup configuration builder
+                IConfiguration Config = new ConfigurationBuilder()
+                    .AddJsonFile("Config/appSettings.json")
+                    .Build();
 
-            //Get configuration values
-            Config.GetSection("TableTop").Bind(tabletop);
+                //Get configuration values
+                Config.GetSection("TableTop").Bind(tabletop);
+            }
+            catch (FileNotFoundException)
+            {
+                //default values
+                tabletop.Width = 6;
+                tabletop.Height = 6;
+            }
 
             //setup Dependency Injection
             var serviceProvider = new ServiceCollection()
