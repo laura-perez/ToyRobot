@@ -6,7 +6,7 @@ Toy Robot Puzzle is a .NET Core console application written in C#.
 This application allows for a simulation of a toy robot moving on a 6 x 6 square tabletop
 
 # Getting Started
-To install and run this application you will need Visual Studio with .NET Core 6.0
+To install and run this application you will need .NET Core 6.0.
 
 This project is using the following nugget packages: 
  * Microsoft.Extensions.Configuration
