@@ -56,7 +56,7 @@ namespace ToyRobot.ConsoleApplication
 
                 var input = Console.ReadLine();
 
-                if (input.ToUpper().Equals("EXIT"))
+                if (input is not null && input.ToUpper().Equals("EXIT"))
                 {
                     Environment.Exit(-1);
                 }
