@@ -11,6 +11,6 @@ namespace ToyRobot.Domain.Models
     {
         public CommandType CommandType { get; set; }
 
-        public Position? Position { get; set; }
+        public Position Position { get; set; }
     }
 }
