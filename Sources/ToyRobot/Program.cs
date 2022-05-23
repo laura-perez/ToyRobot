@@ -45,6 +45,12 @@ namespace ToyRobot.ConsoleApplication
                 Console.WriteLine("Your command is my command:");
 
                 var input = Console.ReadLine();
+
+                if (input.ToUpper().Equals("EXIT"))
+                {
+                    Environment.Exit(-1);
+                }
+
                 var output = simulator.ExecuteCommand(input);
 
                 Console.WriteLine();
@@ -85,6 +91,7 @@ COMMANDS:
 * LEFT will rotate the robot 90 degrees left
 * RIGHT will rotate the robot 90 degrees right
 * REPORT will announce the X,Y and orientation of the robot
+* EXIT to exit the game
 
 
 To get started, put the robot on the table:";
