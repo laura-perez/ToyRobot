@@ -69,6 +69,48 @@ namespace ToyRobot.Domain.Tests
         }
 
         [Fact]
+        public void SuccessfulTurnRobotLeftReturnsRobot()
+        {
+            var currentPosition = new Position()
+            {
+                X = 0,
+                Y = 0,
+                Facing = DirectionFacing.North
+            };
+
+            _toyRobotHandler = new ToyRobotHandler(new Robot() { Position = currentPosition }, _tabletop);
+
+            //Act
+            var result = _toyRobotHandler.TurnRobot(CommandType.Left);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Position.Should().NotBeNull();
+            result.Position.Facing.Should().Be(DirectionFacing.West);
+        }
+
+        [Fact]
+        public void SuccessfulTurnRobotRightReturnsRobot()
+        {
+            var currentPosition = new Position()
+            {
+                X = 0,
+                Y = 0,
+                Facing = DirectionFacing.West
+            };
+
+            _toyRobotHandler = new ToyRobotHandler(new Robot() { Position = currentPosition }, _tabletop);
+
+            //Act
+            var result = _toyRobotHandler.TurnRobot(CommandType.Right);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Position.Should().NotBeNull();
+            result.Position.Facing.Should().Be(DirectionFacing.North);
+        }
+
+        [Fact]
         public void MoveCommandOutOfBoundariesThrowsException()
         {
             var currentPosition = new Position()
