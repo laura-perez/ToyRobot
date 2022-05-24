@@ -41,8 +41,6 @@ namespace ToyRobot.Infrastructure.Parsers
                         command.Position.Facing = direction;
                     }
                 }
-
-                
             }
             //Invalid command entered in console
             catch (ArgumentException)
