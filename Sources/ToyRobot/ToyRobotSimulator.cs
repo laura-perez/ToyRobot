@@ -30,13 +30,13 @@ namespace ToyRobot.ConsoleApplication
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public string ExecuteCommand(string? input)
+        public string ExecuteCommand(string input)
         {
             try
             {
                 if (input == null)
                 {
-                    throw new ArgumentException("Please enter a command.");
+                    throw new NullReferenceException("Please start with a command PLACE X Y DIRECTION");
                 }
 
                 //call to the infrastucture parser
@@ -48,7 +48,7 @@ namespace ToyRobot.ConsoleApplication
                 }
 
                 //First PLACE command
-                if (robot.Position is null && command.CommandType == CommandType.PLACE)
+                if (robot.Position is null && command.CommandType == CommandType.Place)
                 {
                     robot = _toyRobotHandler.PlaceRobot(command.Position);
                     return "Robot is now on the table with coords (" + robot?.Position?.X + "," + robot?.Position?.Y + ")" + " and facing " + robot?.Position?.Facing.ToString();
@@ -58,25 +58,25 @@ namespace ToyRobot.ConsoleApplication
                 {
                     switch (command.CommandType)
                     {
-                        case CommandType.PLACE:
+                        case CommandType.Place:
 
                             robot = _toyRobotHandler.PlaceRobot(command.Position);
 
                             return "ROBOT is on the table at position (" + robot?.Position?.X + "," + robot?.Position?.Y + ") and is facing " + robot?.Position?.Facing?.ToString() + "";
-                        case CommandType.MOVE:
+                        case CommandType.Move:
 
                             robot = _toyRobotHandler.MoveRobot();
 
                             return "Robot went for a walk to position (" + robot?.Position?.X + "," + robot?.Position?.Y;
-                        case CommandType.LEFT:
+                        case CommandType.Left:
 
-                            robot = _toyRobotHandler.TurnRobot(CommandType.LEFT);
+                            robot = _toyRobotHandler.TurnRobot(CommandType.Left);
                             return "Robot is now facing " + robot?.Position?.Facing.ToString();
-                        case CommandType.RIGHT:
+                        case CommandType.Right:
 
-                            robot = _toyRobotHandler.TurnRobot(CommandType.RIGHT);
+                            robot = _toyRobotHandler.TurnRobot(CommandType.Right);
                             return "Robot is now facing " + robot?.Position?.Facing.ToString();
-                        case CommandType.REPORT:
+                        case CommandType.Report:
 
                             string toReturn = Environment.NewLine;
 

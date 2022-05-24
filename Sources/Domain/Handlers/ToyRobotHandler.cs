@@ -64,16 +64,16 @@ namespace ToyRobot.Domain.Handlers
 
             switch (_robot.Position.Facing)
             {
-                case DirectionFacing.NORTH:
+                case DirectionFacing.North:
                     newPosition.Y++;
                     break;
-                case DirectionFacing.SOUTH:
+                case DirectionFacing.South:
                     newPosition.Y--;
                     break;
-                case DirectionFacing.EAST:
+                case DirectionFacing.East:
                     newPosition.X++;
                     break;
-                case DirectionFacing.WEST:
+                case DirectionFacing.West:
                     newPosition.X--;
                     break;
             }
@@ -117,23 +117,6 @@ namespace ToyRobot.Domain.Handlers
         }
 
         /// <summary>
-        /// This methos sets a dictionary of cardinal points directions and linked compass degrees
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<int, DirectionFacing> GetOrientationsDictionary()
-        {
-            Dictionary<int, DirectionFacing> orientations =
-                           new Dictionary<int, DirectionFacing>();
-
-            orientations.Add(0, DirectionFacing.NORTH);
-            orientations.Add(90, DirectionFacing.EAST);
-            orientations.Add(180, DirectionFacing.SOUTH);
-            orientations.Add(270, DirectionFacing.WEST);
-
-            return orientations;
-        }
-
-        /// <summary>
         /// This methods does a 90 degrees rotation
         /// </summary>
         /// <param name="directionFacing">the initial facing direction of the robot</param>
@@ -141,18 +124,17 @@ namespace ToyRobot.Domain.Handlers
         /// <returns></returns>
         private DirectionFacing Rotate(DirectionFacing directionFacing, CommandType commandType)
         {
-            var orientationsDictionary = GetOrientationsDictionary();
-            var degrees = orientationsDictionary.FirstOrDefault(pairs => pairs.Value.Equals(directionFacing)).Key;
+            var degrees = (int)directionFacing;
 
-            if (commandType is CommandType.LEFT)
+            if (commandType is CommandType.Left)
             {
                 if (degrees == 0) degrees = 360;
-                return orientationsDictionary[degrees - 90];
+                return (DirectionFacing)(degrees - 90);
             }
             else
             {
                 if (degrees == 270) degrees = -90;
-                return orientationsDictionary[degrees + 90];
+                return (DirectionFacing)(degrees + 90);
             }
         }
     }

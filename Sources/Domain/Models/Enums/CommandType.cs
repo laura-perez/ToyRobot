@@ -2,10 +2,10 @@
 {
     public enum CommandType
     {
-        PLACE,
-        MOVE,
-        LEFT,
-        RIGHT,
-        REPORT
+        Place,
+        Move,
+        Left,
+        Right,
+        Report
     }
 }

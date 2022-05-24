@@ -25,13 +25,13 @@ namespace ToyRobot.Domain.Tests
             {
                 X = 0,
                 Y = 0,
-                Facing = DirectionFacing.NORTH
+                Facing = DirectionFacing.North
             };
             var newPosition = new Position()
             {
                 X = 3,
                 Y = 3,
-                Facing = DirectionFacing.SOUTH
+                Facing = DirectionFacing.South
             };
 
             _toyRobotHandler = new ToyRobotHandler(new Robot() { Position = currentPosition }, _tabletop);
@@ -53,7 +53,7 @@ namespace ToyRobot.Domain.Tests
             {
                 X = 0,
                 Y = 0,
-                Facing = DirectionFacing.NORTH
+                Facing = DirectionFacing.North
             };
 
             _toyRobotHandler = new ToyRobotHandler(new Robot() { Position = currentPosition }, _tabletop);
@@ -75,7 +75,7 @@ namespace ToyRobot.Domain.Tests
             {
                 X = 0,
                 Y = 4,
-                Facing = DirectionFacing.WEST
+                Facing = DirectionFacing.West
             };
 
             _toyRobotHandler = new ToyRobotHandler(new Robot() { Position = currentPosition }, _tabletop);

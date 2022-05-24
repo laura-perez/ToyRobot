@@ -11,9 +11,9 @@ namespace ToyRobot.Domain.Models.Enums
     /// </summary>
     public enum DirectionFacing
     {
-        NORTH,
-        EAST,
-        SOUTH,
-        WEST
+        North = 0,
+        East = 90,
+        South = 180,
+        West = 270
     }
 }

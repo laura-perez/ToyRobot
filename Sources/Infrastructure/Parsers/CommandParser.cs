@@ -17,7 +17,7 @@ namespace ToyRobot.Infrastructure.Parsers
         /// <param name="inputArgs">the input string</param>
         /// <param name="command">the command object</param>
         /// <returns>a boolean if succeeded</returns>
-        public Command Parse(string? input)
+        public Command Parse(string input)
         {
             Command command = new Command();
             var inputArgs = input.Split(' ');
@@ -25,9 +25,9 @@ namespace ToyRobot.Infrastructure.Parsers
             try
             {
                 //parsing the first argument which should be of type CommandType
-                command.CommandType = Enum.Parse<CommandType>(inputArgs[0].ToUpper());
+                command.CommandType = Enum.Parse<CommandType>(inputArgs[0], true);
 
-                if (command.CommandType is CommandType.PLACE)
+                if (command.CommandType is CommandType.Place)
                 {
                     command.Position = new Position();
                     command.Position.X = int.Parse(inputArgs[1]);
@@ -36,7 +36,7 @@ namespace ToyRobot.Infrastructure.Parsers
                     ////Position Facing Parsing - we don't want to throw and exception since this is an optional parameter
                     DirectionFacing direction;
 
-                    if (inputArgs.Length > 3 && !String.IsNullOrEmpty(inputArgs[3]) && Enum.TryParse(inputArgs[3].ToUpper(), out direction))
+                    if (inputArgs.Length > 3 && !String.IsNullOrEmpty(inputArgs[3]) && Enum.TryParse(inputArgs[3].ToString(), true, out direction))
                     {
                         command.Position.Facing = direction;
                     }

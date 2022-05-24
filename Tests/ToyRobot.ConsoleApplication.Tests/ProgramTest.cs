@@ -45,7 +45,7 @@ namespace ToyRobot.ConsoleApplication.Tests
             string input = "MOVE";
             _mockcommandParser.Setup(x => x.Parse(input))
                                 .Returns(new Command { 
-                                    CommandType = CommandType.MOVE
+                                    CommandType = CommandType.Move
                                 });
 
             _simulator = new ToyRobotSimulator(new Robot(), new Tabletop { Width = 6, Height = 6 }, _mockcommandParser.Object, _mocktoyRobotHandler.Object);
@@ -68,11 +68,11 @@ namespace ToyRobot.ConsoleApplication.Tests
             {
                 X = 1,
                 Y = 2,
-                Facing = DirectionFacing.NORTH
+                Facing = DirectionFacing.North
             };
             var mockCommand = new Command()
             {
-                CommandType = CommandType.PLACE,
+                CommandType = CommandType.Place,
                 Position = position
             };
             var robot = new Robot() { Position = position };
@@ -90,7 +90,7 @@ namespace ToyRobot.ConsoleApplication.Tests
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().Contain("Robot is now on the table with coords (1,2) and facing NORTH");
+            result.Should().Contain("Robot is now on the table with coords (1,2) and facing North");
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace ToyRobot.ConsoleApplication.Tests
             {
                 X = 1,
                 Y = 2,
-                Facing = DirectionFacing.NORTH
+                Facing = DirectionFacing.North
             };
             var newPosition = new Position()
             {
@@ -111,7 +111,7 @@ namespace ToyRobot.ConsoleApplication.Tests
             };
             var mockCommand = new Command()
             {
-                CommandType = CommandType.PLACE,
+                CommandType = CommandType.Place,
                 Position = newPosition
             };
             var mockRobot = new Robot() { Position = position };
@@ -137,7 +137,7 @@ namespace ToyRobot.ConsoleApplication.Tests
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().Contain("ROBOT is on the table at position (2,4) and is facing NORTH");
+            result.Should().Contain("ROBOT is on the table at position (2,4) and is facing North");
         }
 
         [Fact]
@@ -149,11 +149,11 @@ namespace ToyRobot.ConsoleApplication.Tests
             {
                 X = 0,
                 Y = 0,
-                Facing = DirectionFacing.NORTH
+                Facing = DirectionFacing.North
             };
             var mockCommand = new Command()
             {
-                CommandType = CommandType.PLACE,
+                CommandType = CommandType.Place,
                 Position = new Position()
                 {
                     X = 0,
